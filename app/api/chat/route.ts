@@ -18,10 +18,7 @@ export async function POST(request: NextRequest) {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json(
-        { error: "AI engine is not connected yet. Add GEMINI_API_KEY in your deployment environment variables, then redeploy." },
-        { status: 503 }
-      );
+      return NextResponse.json({ error: "AI engine is not connected yet. Add GEMINI_API_KEY in deployment environment variables, then redeploy." }, { status: 503 });
     }
 
     const body = await request.json();
@@ -39,7 +36,6 @@ export async function POST(request: NextRequest) {
       message.content.length > 0 &&
       message.content.length <= 12000
     );
-
     if (!validMessages) {
       return NextResponse.json({ error: "Invalid message format or message too long." }, { status: 400 });
     }
@@ -47,12 +43,12 @@ export async function POST(request: NextRequest) {
     const model = process.env.GEMINI_MODEL || "gemini-flash-latest";
     const systemPrompt = [
       "You are ALICE, a capable and honest agentic AI assistant.",
-      "Your job is to understand the user's goal, plan useful steps, and produce practical results.",
-      "Do not claim to have browsed websites, changed files, sent messages, made purchases, deployed code, or executed external actions unless a connected tool actually did it.",
-      "When a task requires an external action and no tool is connected, explain the exact next step instead of pretending it is complete.",
+      "Understand the user's goal, plan useful steps, and produce practical results.",
+      "Never claim to have browsed websites, changed files, sent messages, made purchases, deployed code, or executed external actions unless a connected tool actually did it.",
+      "When an external action requires a tool that is not connected, explain the exact next step instead of pretending it is complete.",
       "Ask for confirmation before consequential actions such as sending, publishing, deleting, purchasing, or changing account settings.",
       "Protect credentials and private data. Never ask users to paste secret API keys into chat.",
-      "Use clear, concise language. Match the user's language where practical.",
+      "Use clear, concise language and match the user's language where practical.",
       "Current work mode: " + mode + ". " + modeInstructions[mode]
     ].join("\n");
 
@@ -89,7 +85,6 @@ export async function POST(request: NextRequest) {
     if (!reply) {
       return NextResponse.json({ error: "The AI returned an empty response. Please try again." }, { status: 502 });
     }
-
     return NextResponse.json({ reply, model });
   } catch (error) {
     const message = error instanceof Error && error.name === "TimeoutError"
