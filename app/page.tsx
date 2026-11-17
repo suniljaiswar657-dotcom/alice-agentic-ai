@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 type Mode = "all" | "personal" | "business" | "coding" | "research" | "automation";
@@ -60,10 +61,10 @@ export default function Home() {
   return (
     <main className="shell">
       <aside className="sidebar">
-        <a className="brand" href="/" aria-label="Alice AI home">
+        <Link className="brand" href="/" aria-label="Alice AI home">
           <span className="brand-mark">A</span>
           <span>ALICE<span className="brand-muted">.AI</span></span>
-        </a>
+        </Link>
         <button className="new-chat" onClick={() => { setMessages([]); setError(""); }}>
           <span>＋</span> New conversation
         </button>
